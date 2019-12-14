@@ -62,7 +62,7 @@ class FileItemTest extends TestCase
         $manager->update($item);
         $manager->update($item);
 
-        $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
+        $this->assertFileExists($this->root->url() . '/cache/data/' . $item->getTargetRelativePath());
 
         $expected_log = [
 "New cache entry [FileItemTest_rojo]",
@@ -90,7 +90,7 @@ class FileItemTest extends TestCase
         $manager->update($item);
         $manager->update($item);
 
-        $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
+        $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
 
         $expected_log = [
 "New cache entry [FileItemTest_rojo]",
@@ -118,7 +118,7 @@ class FileItemTest extends TestCase
         $manager->update($item);
 
         $target_relative_path = $item->getTargetRelativePath();
-        $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $target_relative_path);
+        $this->assertFileExists($this->root->url() . '/cache/data/' . $target_relative_path);
 
 
         $expected_log = [

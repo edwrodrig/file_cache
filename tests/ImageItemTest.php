@@ -47,7 +47,7 @@ class ImageItemTest extends TestCase
         $manager->update($item);
         $manager->update($item);
 
-        $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
+        $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
 
         $item = new ImageItem(__DIR__ . '/files/image', 'rei.jpg');
         $item->resizeContain(200, 100);
@@ -55,7 +55,7 @@ class ImageItemTest extends TestCase
         $this->assertEquals([ 'width' => 200, 'height' => 100], $item->getAdditionalData());
 
         $manager->update($item);
-        $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
+        $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
 
         $expected_log = [
 "New cache entry [rei_100x100_cover]",
@@ -83,7 +83,7 @@ class ImageItemTest extends TestCase
 
         $this->assertEquals([ 'width' => 630, 'height' => 474], $item->getAdditionalData());
 
-        $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
+        $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
 
         $expected_log = [
 "New cache entry [rei]",
