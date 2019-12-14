@@ -77,10 +77,10 @@ class CacheIndex
             return $entry;
 
         } else {
-            $this->manager->getLogger()->begin(sprintf("New cache entry [%s]", $item->getKey()));
+            $this->manager->getContext()->logBegin(sprintf("New cache entry [%s]", $item->getKey()));
                 $entry = CacheEntry::createFromItem($item, $this->manager);
                 $this->data[$item->getKey()] = $entry;
-            $this->manager->getLogger()->end('', false);
+            $this->manager->getContext()->logEnd('', false);
             return $entry;
         }
 
@@ -109,9 +109,9 @@ class CacheIndex
             if (isset($this->hits[$key]))
                 continue;
 
-            $this->manager->getLogger()->begin(sprintf("Unused cache entry [%s] FOUND!", $entry->getKey()));
+            $this->manager->getContext()->logBegin(sprintf("Unused cache entry [%s] FOUND!", $entry->getKey()));
             $this->removeEntry($entry);
-            $this->manager->getLogger()->end('', false);
+            $this->manager->getContext()->logEnd('', false);
         }
 
 

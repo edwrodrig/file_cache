@@ -2,44 +2,29 @@
 
 include_once __DIR__ . '/../vendor/autoload.php';
 
-use edwrodrig\static_generator\cache\CacheManager;
-use edwrodrig\static_generator\Context;
+use edwrodrig\file_cache\CacheManager;
+use edwrodrig\file_cache\ImageItem;
 
-class Template extends \edwrodrig\static_generator\template\Template {
+class Context implements \edwrodrig\file_cache\Context {
 
-    /**
-     * @return mixed
-     */
-    public function getTitle() : string {
-        return $this->getData()['title'];
-    }
-
-    public function getTemplateType(): string
-    {
-        return 'custom_template';
-    }
-};
-
+    public function logBegin(string $message) { echo $message , "\n"; }
+    public function logEnd(string $message) { echo $message , "\n"; }
+    public function getUrl(string $path): string { return  "//test" . $path; }
+}
 
 $cache  = new CacheManager(__DIR__ . '/cache/images');
+    $cache->setContext(new Context());
     $cache->setTargetWebPath('cache/images');
 
-$context = new Context(__DIR__ . '/files', __DIR__ . '/output/es');
-$context->registerCache($cache);
-$context->setTargetWebPath('es');
-setlocale(LC_ALL, 'es_CL.utf-8');
-
-$context->generate();
-
-
-$context = new Context(__DIR__ . '/files', __DIR__ . '/output/en');
-$context->registerCache($cache);
-$context->setTargetWebPath('en');
-setlocale(LC_ALL, 'en_US.utf-8');
-
-$context->generate();
+echo $cache->update(new ImageItem(__DIR__ . '/data', 'amelia.jpg'));
+echo "\n";
+echo $cache->update((new ImageItem(__DIR__ . '/data', 'amelia.jpg'))->resizeContain(100,100));
+echo "\n";
+//SEE DATA FOLDER TO VIEW CACHED FILES
 
 $cache->save();
+
+
 
 
 

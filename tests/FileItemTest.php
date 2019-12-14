@@ -8,10 +8,8 @@
 
 namespace test\edwrodrig\file_cache;
 
-use edwrodrig\static_generator\cache\CacheManager;
-use edwrodrig\static_generator\cache\FileItem;
-use edwrodrig\static_generator\Context;
-use edwrodrig\static_generator\util\TemporaryLogger;
+use edwrodrig\file_cache\CacheManager;
+use edwrodrig\file_cache\FileItem;
 use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -51,9 +49,7 @@ class FileItemTest extends TestCase
      * @throws Exception
      */
     function testHappy() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext;
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -68,21 +64,20 @@ class FileItemTest extends TestCase
 
         $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
 
-        $expected_log = <<<LOG
-New cache entry [FileItemTest_rojo]
-  Generating cache file [FileItemTest_rojo.php]...GENERATED
-LOG;
+        $expected_log = [
+"New cache entry [FileItemTest_rojo]",
+  "Generating cache file [FileItemTest_rojo.php]...","GENERATED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
     }
 
     /**
      * @throws Exception
      */
     function testExtensionOverride() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -97,21 +92,19 @@ LOG;
 
         $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
 
-        $expected_log = <<<LOG
-New cache entry [FileItemTest_rojo]
-  Generating cache file [FileItemTest_rojo.cpp]...GENERATED
-LOG;
+        $expected_log = [
+"New cache entry [FileItemTest_rojo]",
+  "Generating cache file [FileItemTest_rojo.cpp]...","GENERATED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
     }
 
     /**
      * @throws Exception
      */
     function testSalted() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -128,12 +121,11 @@ LOG;
         $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $target_relative_path);
 
 
-        $expected_log = <<<LOG
-New cache entry [FileItemTest_rojo]
-  Generating cache file [$target_relative_path]...GENERATED
-LOG;
+        $expected_log = [
+"New cache entry [FileItemTest_rojo]",
+  "Generating cache file [$target_relative_path]...","GENERATED",""];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
     }
 
 }

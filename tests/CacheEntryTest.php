@@ -9,10 +9,9 @@
 namespace test\edwrodrig\file_cache;
 
 use DateTime;
+use edwrodrig\file_cache\CacheManager;
 use Exception;
 use org\bovigo\vfs\vfsStream;
-use edwrodrig\static_generator\cache\CacheManager;
-use edwrodrig\static_generator\Context;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
@@ -34,9 +33,7 @@ class CacheEntryTest extends TestCase
      */
     function testCacheEntryUpdateSameEntry() {
 
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-            $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
             $manager->setContext($context);
@@ -56,11 +53,13 @@ class CacheEntryTest extends TestCase
 
 
 
-        $expected_log = <<<LOG
-New cache entry [abc]
-  Generating cache file [abc_salt]...GENERATED
-LOG;
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $expected_log = [
+            "New cache entry [abc]",
+            "Generating cache file [abc_salt]...",
+            "GENERATED",
+            ""
+        ];
+        $this->assertEquals($expected_log, $context->logs);
 
     }
 
@@ -70,9 +69,7 @@ LOG;
      */
     function testCacheEntryUpdateRemovedCachedFile() {
 
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -103,17 +100,17 @@ LOG;
 
         $manager->update($item);
 
-        $expected_log = <<<LOG
-New cache entry [abc]
-  Generating cache file [abc_salt]...GENERATED
-Removing file [abc_salt]...REMOVED
-Cache file [abc_salt] NOT FOUND!
-  Generating cache file [abc_salt_2]...GENERATED
-Outdated cache entry [abc] FOUND!
-  Removing file [abc_salt_2]...REMOVED
-  Generating cache file [abc_salt_3]...GENERATED
-LOG;
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $expected_log = [
+            "New cache entry [abc]",
+  "Generating cache file [abc_salt]...","GENERATED","",
+"Removing file [abc_salt]...","REMOVED",
+"Cache file [abc_salt] NOT FOUND!",
+        "Generating cache file [abc_salt_2]...","GENERATED","",
+"Outdated cache entry [abc] FOUND!",
+        "Removing file [abc_salt_2]...","REMOVED",
+  "Generating cache file [abc_salt_3]...","GENERATED",""
+];
+        $this->assertEquals($expected_log, $context->logs);
     }
 
 
@@ -122,9 +119,7 @@ LOG;
      */
     function testCacheEntryUpdateModifiedFile() {
 
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -142,14 +137,14 @@ LOG;
         $this->assertEquals('abc', $entry->getKey());
         $this->assertEquals('abc_salt_2', $entry->getTargetRelativePath());
 
-    $expected_log = <<<LOG
-New cache entry [abc]
-  Generating cache file [abc_salt]...GENERATED
-Outdated cache entry [abc] FOUND!
-  Removing file [abc_salt]...REMOVED
-  Generating cache file [abc_salt_2]...GENERATED
-LOG;
-        $this->assertEquals($expected_log, $logger->getTargetData());
+    $expected_log = [
+"New cache entry [abc]",
+  "Generating cache file [abc_salt]...","GENERATED","",
+"Outdated cache entry [abc] FOUND!",
+  "Removing file [abc_salt]...","REMOVED",
+  "Generating cache file [abc_salt_2]...","GENERATED",""
+];
+        $this->assertEquals($expected_log, $context->logs);
     }
 }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace test\edwrodrig\file_cache;
 
 use DateTime;
-use edwrodrig\static_generator\cache\CacheableItem as BaseCacheableItem;
-use edwrodrig\static_generator\cache\CacheManager;
+use edwrodrig\file_cache\CacheableItem as BaseCacheableItem;
+use edwrodrig\file_cache\CacheManager;
 
 class CacheableItem implements BaseCacheableItem
 {

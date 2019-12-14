@@ -2,11 +2,8 @@
 
 namespace test\edwrodrig\file_cache;
 
-
 use DateTime;
-use edwrodrig\static_generator\cache\CacheManager;
-use edwrodrig\static_generator\Context;
-use edwrodrig\static_generator\util\TemporaryLogger;
+use edwrodrig\file_cache\CacheManager;
 use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -27,9 +24,7 @@ class CacheManagerTest extends TestCase
      */
     public function testManager() {
 
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -43,15 +38,15 @@ class CacheManagerTest extends TestCase
 
         $manager->update($item);
 
-        $expected_log = <<<LOG
-New cache entry [abc]
-  Generating cache file [abc_salt]...GENERATED
-Outdated cache entry [abc] FOUND!
-  Removing file [abc_salt]...REMOVED
-  Generating cache file [abc_salt]...GENERATED
-LOG;
+        $expected_log = [
+"New cache entry [abc]",
+  "Generating cache file [abc_salt]...","GENERATED","",
+"Outdated cache entry [abc] FOUND!",
+  "Removing file [abc_salt]...","REMOVED",
+  "Generating cache file [abc_salt]...","GENERATED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
     }
 
 
@@ -59,9 +54,7 @@ LOG;
      * @throws Exception
      */
     public function testManagerSaveAndRestored() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -70,16 +63,15 @@ LOG;
         $this->assertEquals(['hola' => 1, 'chao' => 2], $item->getAdditionalData());
         $manager->update($item);
 
-        $expected_log = <<<LOG
-New cache entry [abc]
-  Generating cache file [abc_salt]...GENERATED
-LOG;
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $expected_log = [
+"New cache entry [abc]",
+  "Generating cache file [abc_salt]...","GENERATED",""
+];
+        $this->assertEquals($expected_log, $context->logs);
 
         $manager->save();
 
-        $logger = new TemporaryLogger;
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -91,13 +83,13 @@ LOG;
 
         $manager->update($item);
 
-        $expected_log = <<<LOG
-Outdated cache entry [abc] FOUND!
-  Removing file [abc_salt]...REMOVED
-  Generating cache file [abc_salt]...GENERATED
-LOG;
+        $expected_log = [
+"Outdated cache entry [abc] FOUND!",
+  "Removing file [abc_salt]...","REMOVED",
+  "Generating cache file [abc_salt]...","GENERATED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
 
 
     }
@@ -107,9 +99,7 @@ LOG;
      * @throws Exception
      */
     public function testManagerUnused() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -122,17 +112,16 @@ LOG;
 
         $manager->save();
 
-        $expected_log = <<<LOG
-New cache entry [abc]
-  Generating cache file [abc_salt]...GENERATED
-New cache entry [zxc]
-  Generating cache file [zxc_salt]...GENERATED
-LOG;
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $expected_log = [
+"New cache entry [abc]",
+  "Generating cache file [abc_salt]...","GENERATED","",
+"New cache entry [zxc]",
+  "Generating cache file [zxc_salt]...","GENERATED",""
+];
+        $this->assertEquals($expected_log, $context->logs);
 
 
-        $logger = new TemporaryLogger;
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -140,15 +129,14 @@ LOG;
         $manager->update($item_1);
         $manager->save();
 
-        $expected_log = <<<LOG
-Unused cache entry [zxc] FOUND!
-  Removing file [zxc_salt]...REMOVED
-LOG;
+        $expected_log = [
+"Unused cache entry [zxc] FOUND!",
+  "Removing file [zxc_salt]...","REMOVED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
 
-        $logger = new TemporaryLogger;
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -157,12 +145,12 @@ LOG;
         $manager->update($item_2);
         $manager->save();
 
-        $expected_log = <<<LOG
-New cache entry [zxc]
-  Generating cache file [zxc_salt]...GENERATED
-LOG;
+        $expected_log = [
+"New cache entry [zxc]",
+  "Generating cache file [zxc_salt]...","GENERATED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
 
 
     }
@@ -171,9 +159,7 @@ LOG;
      * @throws Exception
      */
     public function testManagerNoEntries() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
@@ -186,9 +172,7 @@ LOG;
      * @throws Exception
      */
     public function testManagerMultipleCaches() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager1 = new CacheManager( $this->root->url() . '/cache');
         $manager1->setContext($context);

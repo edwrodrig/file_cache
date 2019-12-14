@@ -8,10 +8,8 @@
 
 namespace test\edwrodrig\file_cache;
 
-use edwrodrig\static_generator\cache\CacheManager;
-use edwrodrig\static_generator\cache\ImageItem;
-use edwrodrig\static_generator\Context;
-use edwrodrig\static_generator\util\TemporaryLogger;
+use edwrodrig\file_cache\CacheManager;
+use edwrodrig\file_cache\ImageItem;
 use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -27,7 +25,6 @@ class ImageItemTest extends TestCase
     }
 
 
-
     function testGetCachedFile() {
         $f = new ImageItem('http://edwin.cl', 'hola.jpg');
         $this->assertEquals('hola.jpg', $f->getTargetRelativePath());
@@ -37,14 +34,12 @@ class ImageItemTest extends TestCase
      * @throws Exception
      */
     function testHappy() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
 
-        $item = new ImageItem(__DIR__ . '/../files/image', 'rei.jpg');
+        $item = new ImageItem(__DIR__ . '/files/image', 'rei.jpg');
         $item->resizeCover(100, 100);
         $this->assertEquals('rei_100x100_cover.jpg', $item->getTargetRelativePath());
         $this->assertEquals([ 'width' => 100, 'height' => 100], $item->getAdditionalData());
@@ -54,7 +49,7 @@ class ImageItemTest extends TestCase
 
         $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
 
-        $item = new ImageItem(__DIR__ . '/../files/image', 'rei.jpg');
+        $item = new ImageItem(__DIR__ . '/files/image', 'rei.jpg');
         $item->resizeContain(200, 100);
         $this->assertEquals('rei_200x100_contain.jpg', $item->getTargetRelativePath());
         $this->assertEquals([ 'width' => 200, 'height' => 100], $item->getAdditionalData());
@@ -62,28 +57,26 @@ class ImageItemTest extends TestCase
         $manager->update($item);
         $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
 
-        $expected_log = <<<LOG
-New cache entry [rei_100x100_cover]
-  Generating cache file [rei_100x100_cover.jpg]...GENERATED
-New cache entry [rei_200x100_contain]
-  Generating cache file [rei_200x100_contain.jpg]...GENERATED
-LOG;
+        $expected_log = [
+"New cache entry [rei_100x100_cover]",
+  "Generating cache file [rei_100x100_cover.jpg]...","GENERATED","",
+"New cache entry [rei_200x100_contain]",
+  "Generating cache file [rei_200x100_contain.jpg]...","GENERATED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
     }
 
     /**
      * @throws Exception
      */
     function testNoTransformation() {
-        $logger = new TemporaryLogger;
-        $context = new Context(__DIR__ . '/../files/test_dir', $this->root->url());
-        $context->setLogger($logger);
+        $context = new DummyContext();
 
         $manager = new CacheManager( $this->root->url() . '/cache');
         $manager->setContext($context);
 
-        $item = new ImageItem(__DIR__ . '/../files/image', 'rei.jpg');
+        $item = new ImageItem(__DIR__ . '/files/image', 'rei.jpg');
         $this->assertEquals('rei.jpg', $item->getTargetRelativePath());
 
         $manager->update($item);
@@ -92,12 +85,12 @@ LOG;
 
         $this->assertFileExists($this->root->url() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $item->getTargetRelativePath());
 
-        $expected_log = <<<LOG
-New cache entry [rei]
-  Generating cache file [rei.jpg]...GENERATED
-LOG;
+        $expected_log = [
+"New cache entry [rei]",
+  "Generating cache file [rei.jpg]...","GENERATED",""
+];
 
-        $this->assertEquals($expected_log, $logger->getTargetData());
+        $this->assertEquals($expected_log, $context->logs);
     }
 
 
