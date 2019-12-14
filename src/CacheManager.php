@@ -106,6 +106,10 @@ class CacheManager
         return $this->target_root_path;
     }
 
+    public function getDataTargetAbsolutePath() : string {
+        return $this->getTargetAbsolutePath() . '/data';
+    }
+
     /**
      * Update the index according a item
      *
@@ -131,7 +135,7 @@ class CacheManager
      * @return string
      */
     public function prepareCacheFile(CacheableItem $item) : string {
-        $absolute_path = $this->getTargetAbsolutePath() . '/' . $item->getTargetRelativePath();
+        $absolute_path = $this->getDataTargetAbsolutePath() . '/' . $item->getTargetRelativePath();
         @mkdir(dirname($absolute_path), 0777, true);
         return $absolute_path;
     }
@@ -167,7 +171,7 @@ class CacheManager
             mkdir($dir_name, 0777, true);
 
         symlink(
-            $this->getTargetAbsolutePath(),
+            $this->getDataTargetAbsolutePath(),
             $link
         );
     }

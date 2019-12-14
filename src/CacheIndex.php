@@ -124,7 +124,7 @@ class CacheIndex
      * @return string
      */
     protected function getIndexAbsoluteFilePath() : string {
-        return $this->manager->getTargetAbsolutePath() . DIRECTORY_SEPARATOR . '.cache_index.json';
+        return $this->manager->getTargetAbsolutePath() . '/.cache_index.json';
     }
 
     /**

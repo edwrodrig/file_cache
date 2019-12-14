@@ -141,7 +141,7 @@ class CacheEntry implements JsonSerializable
      * @return string
      */
     protected function getTargetAbsolutePath() : string {
-        return $this->manager->getTargetAbsolutePath() . DIRECTORY_SEPARATOR . $this->getTargetRelativePath();
+        return $this->manager->getDataTargetAbsolutePath() . '/' . $this->getTargetRelativePath();
     }
 
     /**

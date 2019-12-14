@@ -5,6 +5,7 @@ include_once __DIR__ . '/../vendor/autoload.php';
 use edwrodrig\file_cache\CacheManager;
 use edwrodrig\file_cache\ImageItem;
 
+//YOU MUST IMPLEMENT A CONTEXT
 class Context implements \edwrodrig\file_cache\Context {
 
     public function logBegin(string $message) { echo $message , "\n"; }
