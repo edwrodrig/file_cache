@@ -28,8 +28,8 @@ but I'm open for pull requests to make it more compatible.
 The source code is documented using [phpDocumentor](http://docs.phpdoc.org/references/phpdoc/basic-syntax.html) style,
 so it should pop up nicely if you're using IDEs like [PhpStorm](https://www.jetbrains.com/phpstorm) or similar.
 
-![alt text](https://github.com/edwrodrig/file_cache/raw/master/docs/images/arch.png "Architecture")
-![alt text](https://github.com/edwrodrig/file_cache/raw/master/docs/images/quick_reference.jpg "Quick Reference")
+![Architecture](https://github.com/edwrodrig/file_cache/raw/master/docs/images/arch.jpg "Architecture")
+![Quick Reference](https://github.com/edwrodrig/file_cache/raw/master/docs/images/quick_reference.jpg "Quick Reference")
 
 ### Examples
 
