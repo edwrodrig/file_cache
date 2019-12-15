@@ -24,6 +24,9 @@ class ImageItemTest extends TestCase
         $this->root = vfsStream::setup();
     }
 
+    public function copyFile(string $relativePath) {
+        copy($this->root->url() . '/cache/data/' . $relativePath, __DIR__ . '/files/output/' . $relativePath);
+    }
 
     function testGetCachedFile() {
         $f = new ImageItem('http://edwin.cl', 'hola.jpg');
@@ -48,6 +51,7 @@ class ImageItemTest extends TestCase
         $manager->update($item);
 
         $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
+        $this->copyFile($item->getTargetRelativePath());
 
         $item = new ImageItem(__DIR__ . '/files/image', 'rei.jpg');
         $item->resizeContain(200, 100);
@@ -56,6 +60,7 @@ class ImageItemTest extends TestCase
 
         $manager->update($item);
         $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
+        $this->copyFile($item->getTargetRelativePath());
 
         $expected_log = [
 "New cache entry [rei_100x100_cover]",
@@ -84,11 +89,69 @@ class ImageItemTest extends TestCase
         $this->assertEquals([ 'width' => 630, 'height' => 474], $item->getAdditionalData());
 
         $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
+        $this->copyFile($item->getTargetRelativePath());
 
         $expected_log = [
 "New cache entry [rei]",
   "Generating cache file [rei.jpg]...","GENERATED",""
 ];
+
+        $this->assertEquals($expected_log, $context->logs);
+    }
+
+    /**
+     * @throws Exception
+     */
+    function testChangeExtensionToPng() {
+        $context = new DummyContext();
+
+        $manager = new CacheManager( $this->root->url() . '/cache');
+        $manager->setContext($context);
+
+        $item = new ImageItem(__DIR__ . '/files/image', 'rei.jpg');
+            $item->setTargetExtension('png');
+            $item->resizeContain(200, 100);
+
+        $this->assertEquals('rei_200x100_contain.png', $item->getTargetRelativePath());
+        $this->assertEquals([ 'width' => 200, 'height' => 100], $item->getAdditionalData());
+
+        $manager->update($item);
+        $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
+        $this->copyFile($item->getTargetRelativePath());
+
+        $expected_log = [
+            "New cache entry [rei_200x100_contain]",
+            "Generating cache file [rei_200x100_contain.png]...","GENERATED",""
+        ];
+
+        $this->assertEquals($expected_log, $context->logs);
+    }
+
+    /**
+     * @throws Exception
+     */
+    function testChangeExtensionToBmp() {
+        $context = new DummyContext();
+
+        $manager = new CacheManager( $this->root->url() . '/cache');
+        $manager->setContext($context);
+
+        $item = new ImageItem(__DIR__ . '/files/image', 'rei.jpg');
+        $item->setTargetExtension('bmp');
+        $item->resizeContain(200, 100);
+
+        $this->assertEquals('rei_200x100_contain.bmp', $item->getTargetRelativePath());
+        $this->assertEquals([ 'width' => 200, 'height' => 100], $item->getAdditionalData());
+
+        $manager->update($item);
+        $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
+
+        $this->copyFile($item->getTargetRelativePath());
+
+        $expected_log = [
+            "New cache entry [rei_200x100_contain]",
+            "Generating cache file [rei_200x100_contain.bmp]...","GENERATED",""
+        ];
 
         $this->assertEquals($expected_log, $context->logs);
     }
