@@ -148,6 +148,9 @@ class CacheEntryTest extends TestCase
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function testCacheEntryGetLastModificationDate() {
             $context = new DummyContext();
 
@@ -163,6 +166,9 @@ class CacheEntryTest extends TestCase
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function testCacheEntryGetUrl() {
         $context = new DummyContext();
 

@@ -128,4 +128,37 @@ class FileItemTest extends TestCase
         $this->assertEquals($expected_log, $context->logs);
     }
 
+
+    /**
+     * @throws Exception
+     */
+    function testFileWithoutExtension() {
+        $context = new DummyContext();
+
+        $manager = new CacheManager( $this->root->url() . '/cache');
+        $manager->setContext($context);
+
+        $emptyFilenamePath = $this->root->url();
+        $emptyFilename =  "empty_file";
+        file_put_contents($emptyFilenamePath . '/' . $emptyFilename, "empty");
+
+
+        $item = new FileItem($this->root->url(), $emptyFilename);
+        $item
+            ->setVersion('rojo');
+
+        $manager->update($item);
+
+        $target_relative_path = $item->getTargetRelativePath();
+        $this->assertEquals("empty_file_rojo", $target_relative_path);
+        $this->assertFileExists($this->root->url() . '/cache/data/' . $target_relative_path);
+
+
+        $expected_log = [
+            "New cache entry [empty_file_rojo]",
+            "Generating cache file [$target_relative_path]...","GENERATED",""];
+
+        $this->assertEquals($expected_log, $context->logs);
+    }
+
 }
