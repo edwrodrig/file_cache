@@ -15,6 +15,11 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ImageItemTest
+ * Most of generated files are saved on the tests/files/output folder
+ * @package test\edwrodrig\file_cache
+ */
 class ImageItemTest extends TestCase
 {
 
@@ -151,6 +156,33 @@ class ImageItemTest extends TestCase
         $expected_log = [
             "New cache entry [rei_200x100_contain]",
             "Generating cache file [rei_200x100_contain.bmp]...","GENERATED",""
+        ];
+
+        $this->assertEquals($expected_log, $context->logs);
+    }
+
+    /**
+     * @throws Exception
+     */
+    function testSvgFile() {
+        $context = new DummyContext();
+
+        $manager = new CacheManager( $this->root->url() . '/cache');
+        $manager->setContext($context);
+
+        $item = new ImageItem(__DIR__ . '/files/image', 'hw.svg');
+        $item->resizeContain(200, 100);
+
+        $this->assertEquals('hw_200x100_contain.png', $item->getTargetRelativePath());
+        $this->assertEquals([ 'width' => 200, 'height' => 100], $item->getAdditionalData());
+
+        $manager->update($item);
+        $this->assertFileExists($this->root->url() .'/cache/data/' . $item->getTargetRelativePath());
+        $this->copyFile($item->getTargetRelativePath());
+
+        $expected_log = [
+            "New cache entry [hw_200x100_contain]",
+            "Generating cache file [hw_200x100_contain.png]...","GENERATED",""
         ];
 
         $this->assertEquals($expected_log, $context->logs);
