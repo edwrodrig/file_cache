@@ -146,5 +146,39 @@ class CacheEntryTest extends TestCase
 ];
         $this->assertEquals($expected_log, $context->logs);
     }
+
+
+    public function testCacheEntryGetLastModificationDate() {
+            $context = new DummyContext();
+
+            $manager = new CacheManager( $this->root->url() . '/cache');
+            $manager->setContext($context);
+
+            $lastModificationDate = new DateTime('2015-01-01');
+            $item = new CacheableItem('abc', $lastModificationDate, 'salt');
+
+
+            $entry = $manager->update($item);
+            $this->assertEquals($lastModificationDate, $entry->getLastModificationTime());
+    }
+
+
+    public function testCacheEntryGetUrl() {
+        $context = new DummyContext();
+
+        $manager = new CacheManager( $this->root->url() . '/cache');
+        $manager->setTargetWebPath("hola");
+        $manager->setContext($context);
+
+        $lastModificationDate = new DateTime('2015-01-01');
+        $item = new CacheableItem('abc', $lastModificationDate, 'salt');
+
+
+        $expectedUrl = '///test:/hola/abc_salt';
+        $entry = $manager->update($item);
+        $this->assertEquals($expectedUrl, $entry->getUrl());
+
+        $this->assertEquals($expectedUrl, strval($entry));
+    }
 }
 

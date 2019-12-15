@@ -27,6 +27,6 @@ class DummyContext implements Context
      */
     public function getUrl(string $path): string
     {
-        return "///test/" . $path;
+        return "///test:" . $path;
     }
 }
