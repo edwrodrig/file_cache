@@ -1,13 +1,13 @@
 edwrodrig\static_generator
 ========
-A php library to generate static generated sites
+A simple cache for images and files for static webpages
 
-[![Latest Stable Version](https://poser.pugx.org/edwrodrig/static_generator/v/stable)](https://packagist.org/packages/edwrodrig/static_generator)
-[![Total Downloads](https://poser.pugx.org/edwrodrig/static_generator/downloads)](https://packagist.org/packages/edwrodrig/static_generator)
-[![License](https://poser.pugx.org/edwrodrig/static_generator/license)](https://packagist.org/packages/edwrodrig/static_generator)
-[![Build Status](https://travis-ci.org/edwrodrig/static_generator.svg?branch=master)](https://travis-ci.org/edwrodrig/static_generator)
-[![codecov.io Code Coverage](https://codecov.io/gh/edwrodrig/static_generator/branch/master/graph/badge.svg)](https://codecov.io/github/edwrodrig/static_generator?branch=master)
-[![Code Climate](https://codeclimate.com/github/edwrodrig/static_generator/badges/gpa.svg)](https://codeclimate.com/github/edwrodrig/static_generator)
+[![Latest Stable Version](https://poser.pugx.org/edwrodrig/file_cache/v/stable)](https://packagist.org/packages/edwrodrig/file_cache)
+[![Total Downloads](https://poser.pugx.org/edwrodrig/file_cache/downloads)](https://packagist.org/packages/edwrodrig/file_cache)
+[![License](https://poser.pugx.org/edwrodrig/file_cache/license)](https://packagist.org/packages/edwrodrig/file_cache)
+[![Build Status](https://travis-ci.org/edwrodrig/file_cache.svg?branch=master)](https://travis-ci.org/edwrodrig/file_cache)
+[![codecov.io Code Coverage](https://codecov.io/gh/edwrodrig/file_cache/branch/master/graph/badge.svg)](https://codecov.io/github/edwrodrig/file_cache?branch=master)
+[![Code Climate](https://codeclimate.com/github/edwrodrig/file_cache/badges/gpa.svg)](https://codeclimate.com/github/edwrodrig/file_cache)
 
 ## Motivational rant
 

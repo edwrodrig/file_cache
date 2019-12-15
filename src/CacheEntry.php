@@ -19,7 +19,7 @@ use JsonSerializable;
  * @package edwrodrig\static_generator\cache
  * @api
  */
-class CacheEntry implements JsonSerializable
+class CacheEntry implements JsonSerializable, CacheItem
 {
     /**
      * The date when the item was modified last
@@ -269,5 +269,13 @@ class CacheEntry implements JsonSerializable
      */
     public function __toString() : string {
         return $this->getUrl();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLastModificationTime(): DateTime
+    {
+        return $this->last_modification_time;
     }
 }

@@ -1,12 +1,11 @@
 language: php
 
 php:
-  - 7.2
+  - 7.4
   - nightly
 
 before_install:
     - printf "\n" | pecl install imagick
-    - sudo apt-get --reinstall install -qq language-pack-en language-pack-es
 
 addon:
     apt:

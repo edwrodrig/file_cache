@@ -1,6 +1,6 @@
 {
     "name": "edwrodrig/file_cache",
-    "description": "Library to cache images and files for websites",
+    "description": "System for cache images and files for websites",
     "authors": [
         {
             "name": "Edwin Rodríguez León",
@@ -14,10 +14,6 @@
     ],
     "license" : "MIT",
     "minimum-stability" : "stable",
-    "suggest" : {
-        "edwrodrig/contento" : "To manage types and collections",
-        "edwrodrig/google_utils" : "To interact with Google Drive data"
-    },
     "require": {
         "php" : "^7.4",
         "ext-imagick": "*",
@@ -26,7 +22,6 @@
     "require-dev" : {
         "phpunit/phpunit" : "^8.5",
         "edwrodrig/image" : "^2.0",
-        "edwrodrig/contento" : "dev-master",
         "mikey179/vfsstream": "^1.6"
     },
     "autoload" : {

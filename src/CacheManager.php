@@ -106,6 +106,11 @@ class CacheManager
         return $this->target_root_path;
     }
 
+    /**
+     * Get the data target absolute path
+     * The data target is the path where the cached data is stored. It is a folder named data in the same path than the {@see CacheIndex::getIndexAbsoluteFilePath() index path}
+     * @return string
+     */
     public function getDataTargetAbsolutePath() : string {
         return $this->getTargetAbsolutePath() . '/data';
     }
