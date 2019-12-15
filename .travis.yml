@@ -10,6 +10,10 @@ before_install:
 addon:
     apt:
        update: true
+       packages:
+          - librsvg2-bin
+          - imagemagick
+
 
 install:
     - travis_retry composer self-update
