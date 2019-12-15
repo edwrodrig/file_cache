@@ -187,4 +187,41 @@ class CacheManagerTest extends TestCase
         $this->assertFileExists($manager2->getTargetAbsolutePath());
     }
 
+    /**
+     * @throws Exception
+     */
+    public function testManagerLinkToTarget() {
+
+        exec(sprintf('rm -rf %s', __DIR__ . '/files/output_cache'));
+
+        $context = new DummyContext();
+
+        $manager = new CacheManager( __DIR__ . '/files/output_cache/cache');
+        $manager->setTargetWebPath('cache_www');
+        $manager->setContext($context);
+
+        $this->assertEquals('cache_www', $manager->getTargetWebPath());
+
+        $item = new CacheableItem('abc', new DateTime('2015-01-01'), 'salt');
+        $manager->update($item);
+
+
+
+        $expected_log = [
+            "New cache entry [abc]",
+            "Generating cache file [abc_salt]...","GENERATED",""
+        ];
+
+
+
+        $this->assertEquals($expected_log, $context->logs);
+
+        $targetDir = __DIR__ . '/files/output_cache/www';
+        $manager->linkToTarget($targetDir);
+
+        $this->assertFileExists($targetDir . '/' . $manager->getTargetWebPath() . '/' . $item->getTargetRelativePath());
+
+        exec(sprintf('rm -rf %s', __DIR__ . '/files/output_cache'));
+    }
+
 }

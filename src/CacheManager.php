@@ -165,11 +165,12 @@ class CacheManager
      *
      * If you don't do this the cached files will be not visible in the target output.
      *
-     * @api
+     * @param string $targetPath
      * @uses CacheManager::getTargetWebPath()
+     * @api
      */
-    public function linkToTarget() {
-        $link = $this->context->getTargetRootPath() . '/' . $this->getTargetWebPath();
+    public function linkToTarget(string $targetPath) {
+        $link = $targetPath . '/' . $this->getTargetWebPath();
 
         $dir_name = dirname($link);
         if ( !file_exists($dir_name) )
